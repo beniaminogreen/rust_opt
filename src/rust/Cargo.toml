@@ -1,0 +1,15 @@
+[package]
+name = 'rustopt'
+version = '0.1.0'
+edition = '2021'
+
+[lib]
+crate-type = [ 'staticlib' ]
+name = 'rustopt'
+
+[dependencies]
+extendr-api = {version ="0.3.1", features =["ndarray"]}
+indicatif = "0.17.1"
+ndarray = "0.15.6"
+rand = "0.8.5"
+rayon = "1.5.3"
