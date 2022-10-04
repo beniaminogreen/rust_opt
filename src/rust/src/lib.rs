@@ -118,8 +118,7 @@ impl Population {
             }
         }
 
-
-        let mut kids : Vec<Policy> = (1..((self.gen_size - (next_gen.len() as i32)) as usize))
+        let mut kids : Vec<Policy> = (0..((self.gen_size - (next_gen.len() as i32)) as usize))
             .into_par_iter()
             .map(|_| self.create_1_kid(num_mutates))
             .collect();
