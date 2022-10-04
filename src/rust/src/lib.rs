@@ -42,7 +42,7 @@ struct Population {
 }
 
 impl Population {
-    fn new(po_1_t: Vec<f64>, po_1_c: Vec<f64>, po_2_t: Vec<f64>, po_2_c: Vec<f64>, n_treat: usize, temperature_decay:f64) -> Population {
+    fn new(po_1_t: Vec<f64>, po_1_c: Vec<f64>, po_2_t: Vec<f64>, po_2_c: Vec<f64>, n_treat: usize, temperature_decay:f64, gen_size : i32) -> Population {
         let mut pop = Population {
             policies: Vec::new(),
             n_treat: n_treat,
@@ -54,7 +54,7 @@ impl Population {
             temperature: 1.0,
             temperature_decay: temperature_decay,
             gen: 0,
-            gen_size: 5000,
+            gen_size: gen_size,
         };
 
         for _ in 0..pop.gen_size {
@@ -239,7 +239,7 @@ impl Policy {
 }
 
 #[extendr]
-fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_treat: i32, n_iter: u64,temperature_decay : f64) -> Result<Robj> {
+fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_treat: i32, n_iter: u64,temperature_decay : f64, gen_size : i32) -> Result<Robj> {
 
     let mut pop = Population::new(
         po_1_t.to_vec(),
@@ -248,6 +248,7 @@ fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_tre
         po_2_c.to_vec(),
         n_treat as usize,
         temperature_decay,
+        gen_size
     );
 
     let bar = ProgressBar::new(n_iter);
