@@ -8,5 +8,5 @@
 #' @useDynLib rustopt, .registration = TRUE
 NULL
 
-gen_opt <- function(po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay) .Call(wrap__gen_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay)
+gen_opt <- function(po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay, gen_size) .Call(wrap__gen_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay, gen_size)
 

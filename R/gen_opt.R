@@ -8,11 +8,11 @@
 #'
 #'
 #' @export
-gen_opt <- function(po_mat, n_treat, n_iter=500, temperature_decay=.97) {
+gen_opt <- function(po_mat, n_treat, n_iter=500, temperature_decay=.99, gen_size = 10000) {
       po_1_t <- po_mat[,1]
       po_1_c <- po_mat[,2]
       po_2_t <- po_mat[,3]
       po_2_c <- po_mat[,4]
 
-     .Call(wrap__gen_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay)
+     .Call(wrap__gen_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay, gen_size)
 }
