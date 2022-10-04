@@ -4,7 +4,13 @@
 \alias{gen_opt}
 \title{gen_opt: estimate best treatment assignments via a genetic algorithm}
 \usage{
-gen_opt(po_mat, n_treat, n_iter = 500, temperature_decay = 0.97)
+gen_opt(
+  po_mat,
+  n_treat,
+  n_iter = 500,
+  temperature_decay = 0.99,
+  gen_size = 10000
+)
 }
 \arguments{
 \item{po_mat}{matrix of potential outcomes / conditional means. Must be nx4, where n is the number of units.}

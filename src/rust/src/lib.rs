@@ -252,10 +252,11 @@ fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_tre
     );
 
     let bar = ProgressBar::new(n_iter);
-    for _ in 0..n_iter {
+    for i in 0..n_iter {
         pop.evaluate();
         pop.next_gen();
         bar.inc(1);
+        println!("Completed Generation {i}");
     }
 
     pop.evaluate();
