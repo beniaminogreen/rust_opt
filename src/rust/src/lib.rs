@@ -64,7 +64,6 @@ impl Population {
     }
 
     fn evaluate(&mut self) {
-
         self.policies
             .par_iter_mut()
             .for_each(|policy| policy.evaluate(&self.po_1_t, &self.po_1_c, &self.po_2_t, &self.po_2_c));
@@ -81,7 +80,7 @@ impl Population {
         while self.policies.iter().any(|x| x.rank.is_none()) && rank < 10 {
             rank += 1;
             let mut current_best_y = 0.0;
-            for policy in &mut self.policies {
+            for policy in self.policies.iter_mut() {
                 if policy.rank.is_none() {
                     if current_best_y < policy.utility_2.unwrap() {
                         policy.rank = Some(rank);
@@ -91,12 +90,11 @@ impl Population {
             }
         }
 
-        for policy in &mut self.policies {
+        for policy in self.policies.iter_mut() {
             if policy.rank.is_none() {
                 policy.rank = Some(99)
             }
         }
-
     }
 
     fn next_gen(&mut self) {
@@ -120,35 +118,41 @@ impl Population {
             }
         }
 
+
+        let mut kids : Vec<Policy> = (1..((self.gen_size - (next_gen.len() as i32)) as usize))
+            .into_par_iter()
+            .map(|_| self.create_1_kid(num_mutates))
+            .collect();
+
+        next_gen.append(&mut kids);
+        self.policies = next_gen;
+    }
+
+    fn create_1_kid(&self, num_mutates : i32) -> Policy{
         let mut rng = thread_rng();
-        while next_gen.len() < self.gen_size as usize {
-            let i1 = rng.gen_range(0..self.gen_size) as usize;
-            let i2 = rng.gen_range(0..self.gen_size) as usize;
-            let i3 = rng.gen_range(0..self.gen_size) as usize;
-            let i4 = rng.gen_range(0..self.gen_size) as usize;
-            let c1: usize;
-            let c2: usize;
+        let i1 = rng.gen_range(0..self.gen_size) as usize;
+        let i2 = rng.gen_range(0..self.gen_size) as usize;
+        let i3 = rng.gen_range(0..self.gen_size) as usize;
+        let i4 = rng.gen_range(0..self.gen_size) as usize;
+        let c1: usize;
+        let c2: usize;
 
-            if self.policies[i1].rank.unwrap() < self.policies[i2].rank.unwrap() {
-                c1 = i1
-            } else {
-                c1 = i2
-            }
-
-            if self.policies[i3].rank.unwrap() < self.policies[i4].rank.unwrap() {
-                c2 = i3
-            } else {
-                c2 = i4
-            }
-
-            let mut kid = self.policies[c1].merge(&self.policies[c2]);
-            kid.repair();
-            kid.mutate(num_mutates);
-
-            next_gen.push(kid);
+        if self.policies[i1].rank.unwrap() < self.policies[i2].rank.unwrap() {
+            c1 = i1
+        } else {
+            c1 = i2
         }
 
-        self.policies = next_gen;
+        if self.policies[i3].rank.unwrap() < self.policies[i4].rank.unwrap() {
+            c2 = i3
+        } else {
+            c2 = i4
+        }
+
+        let mut kid = self.policies[c1].merge(&self.policies[c2]);
+        kid.repair();
+        kid.mutate(num_mutates);
+        kid
     }
 }
 
@@ -249,9 +253,9 @@ fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_tre
 
     let bar = ProgressBar::new(n_iter);
     for _ in 0..n_iter {
-        bar.inc(1);
         pop.evaluate();
         pop.next_gen();
+        bar.inc(1);
     }
 
     pop.evaluate();
