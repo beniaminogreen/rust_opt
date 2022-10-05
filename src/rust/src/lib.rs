@@ -78,6 +78,8 @@ impl Population {
 
         let mut rank = 0;
         let mut n_seen = 1;
+
+        let mut best_utility_2 = 0.0;
         while self.policies.iter().any(|x| x.rank.is_none()) && (self.n / n_seen) > 4  {
             rank += 1;
             n_seen += 1;
@@ -91,6 +93,14 @@ impl Population {
                 }
             }
         }
+
+        self.policies.sort_by(|a, b| {
+            b.utility_2
+                .unwrap()
+                .partial_cmp(&a.utility_2.unwrap())
+                .unwrap()
+        });
+        self.policies[0].rank = Some(1);
 
         for policy in self.policies.iter_mut() {
             if policy.rank.is_none() {
