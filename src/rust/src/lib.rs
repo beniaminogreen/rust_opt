@@ -77,8 +77,10 @@ impl Population {
         });
 
         let mut rank = 0;
-        while self.policies.iter().any(|x| x.rank.is_none()) && rank < 10 {
+        let mut n_seen = 1;
+        while self.policies.iter().any(|x| x.rank.is_none()) && (self.n / n_seen) > 4  {
             rank += 1;
+            n_seen += 1;
             let mut current_best_y = 0.0;
             for policy in self.policies.iter_mut() {
                 if policy.rank.is_none() {
@@ -103,7 +105,7 @@ impl Population {
 
         self.temperature *= self.temperature_decay;
         let mut num_mutates = (self.temperature * (self.po_2_c.len() as f64)) as i32;
-        num_mutates = std::cmp::max(num_mutates, 10);
+        num_mutates = std::cmp::max(num_mutates, 100);
 
         for policy in &self.policies {
             if policy.rank.unwrap() == 1 {
