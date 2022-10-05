@@ -364,7 +364,7 @@ fn blend_assignment(loss_1 : &[f64], loss_2 : &[f64], weight : f64, n_treat:usiz
     ranks.iter().map(|x| x < &n_treat).collect()
 }
 
-///@export
+/// @export
 #[extendr]
 fn blend_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_treat : u32 , n_policies : u32) -> Result<Robj> {
     let t_loss_1 : Vec<f64>= po_1_t.iter().zip(po_1_c.iter()).map(|(a,b)| a-b).collect();
