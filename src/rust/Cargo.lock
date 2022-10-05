@@ -118,6 +118,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "frank"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06c673c4749344c523d573c19d6d0177d073994b97257cbeb0beba053055a89e"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -339,6 +348,7 @@ name = "rustopt"
 version = "0.1.0"
 dependencies = [
  "extendr-api",
+ "frank",
  "indicatif",
  "ndarray",
  "rand",
