@@ -10,3 +10,5 @@ NULL
 
 gen_opt <- function(po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay, gen_size) .Call(wrap__gen_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_iter, temperature_decay, gen_size)
 
+blend_opt <- function(po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_policies) .Call(wrap__blend_opt, po_1_t, po_1_c, po_2_t, po_2_c, n_treat, n_policies)
+

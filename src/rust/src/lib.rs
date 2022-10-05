@@ -311,16 +311,7 @@ impl Policy {
 }
 
 #[extendr]
-fn gen_opt(
-    po_1_t: &[f64],
-    po_1_c: &[f64],
-    po_2_t: &[f64],
-    po_2_c: &[f64],
-    n_treat: i32,
-    n_iter: u64,
-    temperature_decay: f64,
-    gen_size: i32,
-) -> Result<Robj> {
+fn gen_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_treat: i32, n_iter: u64, temperature_decay: f64, gen_size: i32,) -> Result<Robj> {
     let mut pop = Population::new(
         po_1_t.to_vec(),
         po_1_c.to_vec(),
@@ -365,10 +356,36 @@ fn gen_opt(
     Ok(array)
 }
 
+fn blend_assignment(loss_1 : &[f64], loss_2 : &[f64], weight : f64, n_treat:usize) -> Vec<bool> {
+    let loss : Vec<f64>= loss_1.iter().zip(loss_2.iter()).map(|(x,y)| weight*x + (1.0-weight)*y).collect();
+
+    let ranks : Vec<usize> = loss.rank();
+
+    ranks.iter().map(|x| x < &n_treat).collect()
+}
+
+#[extendr]
+fn blend_opt(po_1_t: &[f64], po_1_c: &[f64], po_2_t: &[f64], po_2_c: &[f64], n_treat : u32 , n_policies : u32) -> Result<Robj> {
+    let t_loss_1 : Vec<f64>= po_1_t.iter().zip(po_1_c.iter()).map(|(a,b)| a-b).collect();
+    let t_loss_2 : Vec<f64>= po_2_t.iter().zip(po_2_c.iter()).map(|(a,b)| a-b).collect();
+
+    let mut out_arr: Array2<bool> = Array2::from_elem((t_loss_1.len(), n_policies as usize), false);
+
+    for (i, mut col) in out_arr.axis_iter_mut(Axis(1)).enumerate() {
+        let lambda : f64 = i as f64  / n_policies as f64;
+        col.assign(&Array::from_vec(blend_assignment(&t_loss_1, &t_loss_2, lambda, n_treat as usize)));
+    }
+
+    let array = Robj::try_from(&out_arr).unwrap();
+
+    Ok(array)
+}
+
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
 // See corresponding C code in `entrypoint.c`.
 extendr_module! {
     mod rustopt;
     fn gen_opt;
+    fn blend_opt;
 }
